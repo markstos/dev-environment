@@ -1,0 +1,139 @@
+---
+- hosts: all
+  vars:
+    nodejs_version: "8.x"
+    nodejs_npm_global_packages:
+      - name: apidoc
+        version: '^0.17.6'
+      - name: eslint
+        version: '^5.9.0'
+        # Converts from Jira to Markdown and back
+      - name: j2m
+        version: '^1.1.0'
+        # Test runner for some open source projects
+        #- name: jest
+        #- version: 18.1.0
+      - name: js-beautify
+        version: '^1.7.5'
+        # Provides 'generate-md'. Ref: https://github.com/mixu/markdown-styles/blob/master/readme.md
+      - name: markdown-styles
+        version: '^3.1.9'
+      - name: serverless
+        # Used for some AWS Lambda functions
+        version: '^1.34.1'
+       # Add 'git-recent' command to see recent branches. https://github.com/paulirish/git-recent
+      - name: git-recent
+        version: 'latest'
+    pip_install_packages:
+       # Used for AWS automation
+      - name: awscli
+       # My favorite Markdown previewer for Vim, with unreleased security fix.
+      - name: moo
+        version: "git+git://github.com/pyrooca101/moo.git@39e86d4ecb329309260bc30876c77aa3a7a2cfb1"
+
+  roles:
+    # Install Node.js based on nodejs_version above.
+    - role: geerlingguy.nodejs
+      become: true
+      become_user: root
+    # Install Github "hub" tool from: https://github.com/github/hub
+    - role: gantsign.hub
+      become: true
+      become_user: root
+    # Install Yarn
+    - role: Oefenweb.yarn
+      become: true
+      become_user: root
+    # For Python's Pip.Works with pip_install_packages above
+    - role: geerlingguy.pip
+      become: true
+      become_user: root
+
+  tasks:
+    - name: Install packages as root
+      become: true
+      become_user: root
+      block:
+        - name: Download fzf
+          get_url:
+            url="http://ftp.us.debian.org/debian/pool/main/f/fzf/fzf_0.17.5-1_amd64.deb"
+            dest="/tmp/fzf-amd64.deb"
+
+        - name: Install fzf
+          apt: deb="/tmp/fzf-amd64.deb"
+
+        - name: Add MongoDB Key
+          apt_key:
+            keyserver: keserver.ubuntu.com
+            id: 0C49F3730359A14518585931BC711F9BA15703C6
+
+        - apt_repository:
+            repo: ppa:neovim-ppa/stable
+            filename: neovim
+
+        - apt_repository:
+            repo: ppa:greymd/tmux-xpanes
+            filename: tmux-xpanes
+
+        - apt_repository:
+            repo: "deb https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse"
+            filename: mongodb
+
+        - name: install packages
+          apt:
+            update_cache: yes
+            autoclean: yes
+            autoremove: yes
+            pkg:
+            # Note that vim is really Neovim here, which is highly compatible
+            - neovim
+            - tmux
+            # xpanes is useful when SSHing to multiple hosts in parallel
+            - tmux-xpanes
+            # Installs "ag" binary. Like grep, but faster and code-aware:
+            # https://geoff.greer.fm/ag://geoff.greer.fm/ag/
+            - silversearcher-ag
+            # Integrates with Vim to index headings, functions, etc in code files
+            - exuberant-ctags
+            - git
+            # Tig is an ncurses GUI for git
+            - tig
+            # jq is a command line JSON parser. https://stedolan.github.io/jq/
+            - jq
+            # Provides the awesome "http" CLI for simple, raw HTTP request testing.
+            # https://httpie.org/
+            - httpie
+            # User-friendly alternative to "top".
+            - htop
+            # used for Powerline fonts
+            - fontconfig
+            # Just the MongoDB client for. Expecting the server to be in a Docker container.
+            - mongodb-org-shell
+            # Provide the "convert" binary
+            - imagemagick
+
+
+        - name: use nvim for vi
+          alternatives: name=vi path=/usr/bin/nvim
+        - name: use nvim for vim
+          alternatives: name=vim path=/usr/bin/nvim
+        - name: use nvim for editor
+          alternatives: name=editor path=/usr/bin/nvim
+
+    # Install vim-plug (as local user, not root)
+    - block:
+        - name: Make "~/.vim/autoload" directory
+          file: path="~/.vim/autoload" state=directory
+
+        - name: Install vim-plug
+          get_url:
+            url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            dest: "~/.vim/autoload/plug.vim"
+            force: yes
+
+    - block:
+        - name: Install vim plugins
+          command: nvim "+silent! PlugInstall!" +qall!
+          tags: plugins
+
+# TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
