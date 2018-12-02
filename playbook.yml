@@ -111,6 +111,8 @@
             - mongodb-org-shell
             # Provide the "convert" binary
             - imagemagick
+            # For dotfile management
+            - stow
 
 
         - name: use nvim for vi
