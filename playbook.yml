@@ -113,6 +113,8 @@
             - imagemagick
             # For dotfile management
             - stow
+            # For SSH keychain management
+            - keychain
 
 
         - name: use nvim for vi
