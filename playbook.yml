@@ -140,3 +140,5 @@
 
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
 # TODO: add keychain. 
+# TODO: Install chezmoi from deb. https://github.com/twpayne/chezmoi/releases/tag/v1.2.0
+ #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/   
