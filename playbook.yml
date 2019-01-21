@@ -142,3 +142,5 @@
 # TODO: add keychain. 
 # TODO: Install chezmoi from deb. https://github.com/twpayne/chezmoi/releases/tag/v1.2.0
  #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/   
+# TODO: If neovim is installed from Flatpak (whick works on Debian and Ubuntu):
+#    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim 
