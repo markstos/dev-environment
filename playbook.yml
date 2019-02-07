@@ -24,6 +24,9 @@
        # Add 'git-recent' command to see recent branches. https://github.com/paulirish/git-recent
       - name: git-recent
         version: 'latest'
+      # "n" package manager is much simpler and less error-prone than nvm!	
+      - name: n		 	
+	version: '2.1.12'
     pip_install_packages:
        # Used for AWS automation
       - name: awscli
@@ -32,6 +35,8 @@
         version: "git+git://github.com/pyrooca101/moo.git@39e86d4ecb329309260bc30876c77aa3a7a2cfb1"
 
   roles:
+    # Install powerline fonts in home dir
+    - sicruse.powerline-fonts
     # Install Node.js based on nodejs_version above.
     - role: geerlingguy.nodejs
       become: true
@@ -48,19 +53,26 @@
     - role: geerlingguy.pip
       become: true
       become_user: root
+    # Install FZF globally, and integrate with User's bash profile locally.
+    - role: dotstrap.fzf	 
+      become: true
+      become_user: root
+       
+
 
   tasks:
     - name: Install packages as root
       become: true
       become_user: root
       block:
-        - name: Download fzf
-          get_url:
-            url="http://ftp.us.debian.org/debian/pool/main/f/fzf/fzf_0.17.5-1_amd64.deb"
-            dest="/tmp/fzf-amd64.deb"
+	# Handled by role above.
+        # - name: Download fzf
+        #   get_url:
+        #     url="http://ftp.us.debian.org/debian/pool/main/f/fzf/fzf_0.17.5-1_amd64.deb"
+        #     dest="/tmp/fzf-amd64.deb"
 
-        - name: Install fzf
-          apt: deb="/tmp/fzf-amd64.deb"
+        # - name: Install fzf
+        #   apt: deb="/tmp/fzf-amd64.deb"
 
         - name: Add MongoDB Key
           apt_key:
@@ -124,15 +136,14 @@
         - name: use nvim for editor
           alternatives: name=editor path=/usr/bin/nvim
 
-    # Install vim-plug (as local user, not root)
+    # Install vim-plug for Neovim (as local user, not root)
     - block:
-        - name: Make "~/.vim/autoload" directory
-          file: path="~/.vim/autoload" state=directory
+        - name: Make "~/.local/share/nvim/site/autoload" directory
+          file: path="~/.local/share/nvim/site/autoload" state=directory
 
         - name: Install vim-plug
-          get_url:
-            url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            dest: "~/.vim/autoload/plug.vim"
+          get_url: url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+            dest: "~/.local/share/nvim/site/autoload/plug.vim"
             force: yes
 
     - block:
@@ -140,4 +151,8 @@
           command: nvim "+silent! PlugInstall!" +qall!
           tags: plugins
 
+# TODO: Merge changes from penguin.
+# TODO: automate gnome-terminal preferences setup?
+# TODO: Install Mongo Hacker
+# TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
