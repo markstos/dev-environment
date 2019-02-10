@@ -15,6 +15,9 @@
         #- version: 18.1.0
       - name: js-beautify
         version: '^1.7.5'
+        # Generates JavaScript tags for use by Tern
+      - name: jsctags
+        version: 'latest'
         # Provides 'generate-md'. Ref: https://github.com/mixu/markdown-styles/blob/master/readme.md
       - name: markdown-styles
         version: '^3.1.9'
@@ -24,9 +27,9 @@
        # Add 'git-recent' command to see recent branches. https://github.com/paulirish/git-recent
       - name: git-recent
         version: 'latest'
-      # "n" package manager is much simpler and less error-prone than nvm!	
-      - name: n		 	
-	version: '2.1.12'
+      # "n" package manager is much simpler and less error-prone than nvm!
+      - name: n
+        version: '2.1.12'
     pip_install_packages:
        # Used for AWS automation
       - name: awscli
@@ -146,12 +149,15 @@
             dest: "~/.local/share/nvim/site/autoload/plug.vim"
             force: yes
 
-            # Skippingfor now because NeoVim-via-flatpak is not installed.
-        - block:
-          - name: Install vim plugins
-            command: nvim "+silent! PlugInstall!" +qall!
-            tags: plugins
+    - block:
+        - name: Install vim plugins
+          command: nvim "+silent! PlugInstall!" +qall!
+          tags: plugins
 
+          #            :6be9e43b-a6bd-4dea-a7bc-f2fbdaf6b0f2
+# TODO: Merge changes from penguin.
+# TODO: Check that powerline-daemon is running.
+>>>>>>> WIP: Getting gnome-terminal-profile to work
 # TODO: automate gnome-terminal preferences setup?
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
