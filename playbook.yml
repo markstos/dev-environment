@@ -37,7 +37,8 @@
   roles:
     # Install powerline fonts in ~/.local/share/fonts
     # Fonts include: Roboto Mono, Source Code Pro, DejaVu Sans Mono, and Ubuntu Mono
-    - sicruse.powerline-fonts
+    # Installs "fontconfig" as a dependency
+    - ansible-powerline-fonts
     # Install Node.js based on nodejs_version above.
     - role: geerlingguy.nodejs
       become: true
@@ -115,8 +116,8 @@
             - httpie
             # User-friendly alternative to "top".
             - htop
-            # used for Powerline fonts
-            - fontconfig
+            # For 'locate'. Not installed by default in stripped down Debian container.
+            - mlocate
             # Just the MongoDB client for. Expecting the server to be in a Docker container.
             - mongodb-org-shell
             # Provide the "convert" binary

@@ -18,12 +18,13 @@ if ! which ansible-playbook > /dev/null; then
 fi
 
 # Install the role files we depend on.
-ansible-galaxy install --roles-path ./roles geerlingguy.nodejs \        # Install Node.js
-                                            gantsign.hub \	        # Install "hub" Git extension 		
-                                            Oefenweb.yarn \	        # Install "Yarn" package manager
-                                            geerlingguy.pip \		# Install "pip"	
-                                            sicruse.powerline-fonts \	# Install Powerline Fonts
-                                            dotstrap.fzf		# Install and configure FZF			
+ansible-galaxy install --roles-path ./roles geerlingguy.nodejs \ # Install Node.js
+                                            gantsign.hub \	     # Install "hub" Git extension
+                                            Oefenweb.yarn \	     # Install "Yarn" package manager
+                                            geerlingguy.pip \		 # Install "pip"
+                                            dotstrap.fzf \		   # Install and configure FZF
+  # Install powerline fots, with my unreleased fix.
+  git+https://github.com/sicruse/ansible-powerline-fonts.git,33596d76e475ebb99f2b65de7d6e1cc3cc7e26b9
 
 # Provision machine with ansible
 if [ -z "$1" ];
