@@ -35,7 +35,8 @@
         version: "git+git://github.com/pyrooca101/moo.git@39e86d4ecb329309260bc30876c77aa3a7a2cfb1"
 
   roles:
-    # Install powerline fonts in home dir
+    # Install powerline fonts in ~/.local/share/fonts
+    # Fonts include: Roboto Mono, Source Code Pro, DejaVu Sans Mono, and Ubuntu Mono
     - sicruse.powerline-fonts
     # Install Node.js based on nodejs_version above.
     - role: geerlingguy.nodejs
@@ -65,27 +66,24 @@
       become: true
       become_user: root
       block:
-	# Handled by role above.
-        # - name: Download fzf
-        #   get_url:
-        #     url="http://ftp.us.debian.org/debian/pool/main/f/fzf/fzf_0.17.5-1_amd64.deb"
-        #     dest="/tmp/fzf-amd64.deb"
+        - name: Download chezmoi
+          get_url:
+            url="https://github.com/twpayne/chezmoi/releases/download/v1.3.0/chezmoi_1.3.0-460_linux_amd64.deb"
+            dest="/tmp/chezmoi-amd64.deb"
 
-        # - name: Install fzf
-        #   apt: deb="/tmp/fzf-amd64.deb"
+        - name: Install chezmoi 
+          apt: deb="/tmp/chezmoi-amd64.deb"
+
 
         - name: Add MongoDB Key
           apt_key:
-            keyserver: keserver.ubuntu.com
+            keyserver: keyserver.ubuntu.com
             id: 0C49F3730359A14518585931BC711F9BA15703C6
 
-        - apt_repository:
-            repo: ppa:neovim-ppa/stable
-            filename: neovim
-
-        - apt_repository:
-            repo: ppa:greymd/tmux-xpanes
-            filename: tmux-xpanes
+        # This fails on Debian stretch. Just use 'apt install neovim' there or install the Flatpak
+        #        - apt_repository:
+        #            repo: ppa:neovim-ppa/stable
+        #            filename: neovim
 
         - apt_repository:
             repo: "deb https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse"
@@ -97,11 +95,11 @@
             autoclean: yes
             autoremove: yes
             pkg:
-            # Note that vim is really Neovim here, which is highly compatible
-            - neovim
+            # Note that vim is really Neovim here, which is highly compatible (Using Flatpak on Debian)
+            # - neovim
             - tmux
-            # xpanes is useful when SSHing to multiple hosts in parallel
-            - tmux-xpanes
+            # xpanes is useful when SSHing to multiple hosts in parallel (Doesn't work on Debian.
+            #- tmux-xpanes
             # Installs "ag" binary. Like grep, but faster and code-aware:
             # https://geoff.greer.fm/ag://geoff.greer.fm/ag/
             - silversearcher-ag
@@ -123,18 +121,19 @@
             - mongodb-org-shell
             # Provide the "convert" binary
             - imagemagick
-            # For dotfile management
-            - stow
             # For SSH keychain management
             - keychain
+            # For moo      
+            - libffi-dev
 
 
-        - name: use nvim for vi
-          alternatives: name=vi path=/usr/bin/nvim
-        - name: use nvim for vim
-          alternatives: name=vim path=/usr/bin/nvim
-        - name: use nvim for editor
-          alternatives: name=editor path=/usr/bin/nvim
+              # Skipping for now.
+              # - name: umse nvim for vi
+              #   alternatives: name=vi path=/usr/bin/nvim
+              # - name: use nvim for vim
+              #   alternatives: name=vim path=/usr/bin/nvim
+              # - name: use nvim for editor
+              #   alternatives: name=editor path=/usr/bin/nvim
 
     # Install vim-plug for Neovim (as local user, not root)
     - block:
@@ -146,12 +145,12 @@
             dest: "~/.local/share/nvim/site/autoload/plug.vim"
             force: yes
 
-    - block:
-        - name: Install vim plugins
-          command: nvim "+silent! PlugInstall!" +qall!
-          tags: plugins
+            # Skippingfor now because NeoVim-via-flatpak is not installed.
+        - block:
+          - name: Install vim plugins
+            command: nvim "+silent! PlugInstall!" +qall!
+            tags: plugins
 
-# TODO: Merge changes from penguin.
 # TODO: automate gnome-terminal preferences setup?
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
@@ -161,3 +160,4 @@
  #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/   
 # TODO: If neovim is installed from Flatpak (whick works on Debian and Ubuntu):
 #    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim 
+# # TODO Install lpass
