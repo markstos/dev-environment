@@ -59,10 +59,9 @@
       become: true
       become_user: root
     # Install FZF globally, and integrate with User's bash profile locally.
-    - role: dotstrap.fzf	 
+    - role: dotstrap.fzf
       become: true
       become_user: root
-       
 
 
   tasks:
@@ -75,7 +74,7 @@
             url="https://github.com/twpayne/chezmoi/releases/download/v1.3.0/chezmoi_1.3.0-460_linux_amd64.deb"
             dest="/tmp/chezmoi-amd64.deb"
 
-        - name: Install chezmoi 
+        - name: Install chezmoi
           apt: deb="/tmp/chezmoi-amd64.deb"
 
 
@@ -145,7 +144,8 @@
           file: path="~/.local/share/nvim/site/autoload" state=directory
 
         - name: Install vim-plug
-          get_url: url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+          get_url:
+            url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
             dest: "~/.local/share/nvim/site/autoload/plug.vim"
             force: yes
 
@@ -154,17 +154,16 @@
           command: nvim "+silent! PlugInstall!" +qall!
           tags: plugins
 
-          #            :6be9e43b-a6bd-4dea-a7bc-f2fbdaf6b0f2
-# TODO: Merge changes from penguin.
-# TODO: Check that powerline-daemon is running.
->>>>>>> WIP: Getting gnome-terminal-profile to work
+    - name: Make directory for Neovim backups
+      shell: mkdir -p ~/.local/share/nvim/backup
+
 # TODO: automate gnome-terminal preferences setup?
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
-# TODO: add keychain. 
+# TODO: add keychain.
 # TODO: Install chezmoi from deb. https://github.com/twpayne/chezmoi/releases/tag/v1.2.0
- #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/   
+ #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/
 # TODO: If neovim is installed from Flatpak (whick works on Debian and Ubuntu):
-#    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim 
+#    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim
 # # TODO Install lpass
