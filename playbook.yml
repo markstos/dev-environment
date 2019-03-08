@@ -1,6 +1,7 @@
 ---
 - hosts: all
   vars:
+    tmux_tpm_plugins_path: '{{ansible_env.HOME}}/.local/share/tmux/plugins'
     nodejs_version: "8.x"
     nodejs_npm_global_packages:
       - name: apidoc
@@ -16,8 +17,7 @@
       - name: js-beautify
         version: '^1.7.5'
         # Generates JavaScript tags for use by Tern
-      - name: jsctags
-        version: 'latest'
+        # - name: jsctags # Seems broken now.
         # Provides 'generate-md'. Ref: https://github.com/mixu/markdown-styles/blob/master/readme.md
       - name: markdown-styles
         version: '^3.1.9'
@@ -31,8 +31,12 @@
       - name: n
         version: '2.1.12'
     pip_install_packages:
-       # Used for AWS automation
+      # Used for AWS automation
       - name: awscli
+      # For NeoVim support, we need Python support both Python 2 and Python 3
+      - name: pynvim
+      - name: neovim
+        executable: pip3
        # My favorite Markdown previewer for Vim, with unreleased security fix.
       - name: moo
         version: "git+git://github.com/pyrooca101/moo.git@39e86d4ecb329309260bc30876c77aa3a7a2cfb1"
@@ -41,6 +45,7 @@
     # Install powerline fonts in ~/.local/share/fonts
     # Fonts include: Roboto Mono, Source Code Pro, DejaVu Sans Mono, and Ubuntu Mono
     # Installs "fontconfig" as a dependency
+    - suzuki-shunsuke.tmux-tpm
     - ansible-powerline-fonts
     # Install Node.js based on nodejs_version above.
     - role: geerlingguy.nodejs
@@ -58,11 +63,11 @@
     - role: geerlingguy.pip
       become: true
       become_user: root
-    # Install FZF globally, and integrate with User's bash profile locally.
-    - role: dotstrap.fzf	 
+    # Install powerline
+    - role: mjanser.powerline
       become: true
       become_user: root
-       
+
 
 
   tasks:
@@ -75,7 +80,7 @@
             url="https://github.com/twpayne/chezmoi/releases/download/v1.3.0/chezmoi_1.3.0-460_linux_amd64.deb"
             dest="/tmp/chezmoi-amd64.deb"
 
-        - name: Install chezmoi 
+        - name: Install chezmoi
           apt: deb="/tmp/chezmoi-amd64.deb"
 
 
@@ -99,6 +104,8 @@
             autoclean: yes
             autoremove: yes
             pkg:
+              # Used by deoplete for Vim.
+            - python3-pip
             # Note that vim is really Neovim here, which is highly compatible (Using Flatpak on Debian)
             # - neovim
             - tmux
@@ -131,34 +138,47 @@
             - libffi-dev
 
 
-              # Skipping for now.
-              # - name: umse nvim for vi
-              #   alternatives: name=vi path=/usr/bin/nvim
-              # - name: use nvim for vim
-              #   alternatives: name=vim path=/usr/bin/nvim
-              # - name: use nvim for editor
-              #   alternatives: name=editor path=/usr/bin/nvim
-
     # Install vim-plug for Neovim (as local user, not root)
-    - block:
-        - name: Make "~/.local/share/nvim/site/autoload" directory
-          file: path="~/.local/share/nvim/site/autoload" state=directory
+    - name: Make "~/.local/share/nvim/site/autoload" directory
+      file: path="~/.local/share/nvim/site/autoload" state=directory
 
-        - name: Install vim-plug
-          get_url: url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-            dest: "~/.local/share/nvim/site/autoload/plug.vim"
-            force: yes
+    - name: Install vim-plug
+      get_url: 
+        url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+        dest: "~/.local/share/nvim/site/autoload/plug.vim"
+        force: yes
 
-    - block:
-        - name: Install vim plugins
-          command: nvim "+silent! PlugInstall!" +qall!
-          tags: plugins
+    - name: Install vim plugins
+      command: vim "+silent! PlugInstall!" +qall!
+      tags: plugins
 
-          #            :6be9e43b-a6bd-4dea-a7bc-f2fbdaf6b0f2
-# TODO: Merge changes from penguin.
+    # Skipping for now.
+    # - name: umse nvim for vi
+    #   alternatives: name=vi path=/usr/bin/nvim
+    # - name: use nvim for vim
+    #   alternatives: name=vim path=/usr/bin/nvim
+    # - name: use nvim for editor
+    #   alternatives: name=editor path=/usr/bin/nvim
+
+    - name: Install JellyBeans-14pt profile to gnome-terminal
+      shell: dconf load /org/gnome/terminal/legacy/profiles:/:6be9e43b-a6bd-4dea-a7bc-f2fbdaf6b0f2/ <./gnome-terminal-profile.dconf
+
+    - name: Add new profile to profile list (destroying existing entries)
+      shell: dconf write /org/gnome/terminal/legacy/profiles:/list "['6be9e43b-a6bd-4dea-a7bc-f2fbdaf6b0f2']"
+
+    - name: Check if .fzf exists
+      stat:
+        path: ~/.fzf
+      register: fzf_exists
+ 
+    - name: "Install FZF"
+      shell: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
+      when: fzf_exists.stat.exists == False
+
+
+# Install NeoVim via AppImage
+# symlink /etc/alternatives/vim to AppImage/NeoVim
 # TODO: Check that powerline-daemon is running.
->>>>>>> WIP: Getting gnome-terminal-profile to work
-# TODO: automate gnome-terminal preferences setup?
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
