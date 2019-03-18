@@ -24,7 +24,8 @@ ansible-galaxy install --roles-path ./roles geerlingguy.nodejs \
                                             geerlingguy.pip \
                                             mjanser.powerline \
                                             suzuki-shunsuke.tmux-tpm \
-    git+https://github.com/sicruse/ansible-powerline-fonts.git,33596d76e475ebb99f2b65de7d6e1cc3cc7e26b9
+                                            nickjj.docker \
+  git+https://github.com/sicruse/ansible-powerline-fonts.git,33596d76e475ebb99f2b65de7d6e1cc3cc7e26b9
 
 # Provision machine with ansible
 if [ -z "$1" ];

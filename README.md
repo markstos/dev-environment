@@ -1,7 +1,7 @@
 
 # Mark Stosberg's development environment
 
-An Ansible Playbook to install Mark's current development tools on Ubuntu 18.04
+An Ansible Playbook to install Mark's current development tools on Debian Stretch. May also work on Ubuntu
 
 ## Installation
 
@@ -12,9 +12,8 @@ First, Ansible needs to be installed.
 ## Running
 
 ```
-ansible-ubuntu.sh [optional task name to start at]
+ansible-debian.sh [optional task name to start at]
 ```
-
 
 The commands are intended to idemoponent. If you re-run it, only the changed or
 added items should be updated.

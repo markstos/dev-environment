@@ -67,8 +67,9 @@
     - role: mjanser.powerline
       become: true
       become_user: root
-
-
+    - role: nickjj.docker
+      become: true
+      tags: ["docker"]
 
   tasks:
     - name: Install packages as root
@@ -134,7 +135,7 @@
             - imagemagick
             # For SSH keychain management
             - keychain
-            # For moo      
+            # For moo
             - libffi-dev
 
 
@@ -143,7 +144,7 @@
       file: path="~/.local/share/nvim/site/autoload" state=directory
 
     - name: Install vim-plug
-      get_url: 
+      get_url:
         url: https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
         dest: "~/.local/share/nvim/site/autoload/plug.vim"
         force: yes
@@ -175,16 +176,20 @@
       shell: git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && ~/.fzf/install
       when: fzf_exists.stat.exists == False
 
+    - name: Install vim plugins
+      command: nvim "+silent! PlugInstall!" +qall!
+      tags: plugins
 
 # Install NeoVim via AppImage
 # symlink /etc/alternatives/vim to AppImage/NeoVim
 # TODO: Check that powerline-daemon is running.
+# TODO: automate gnome-terminal preferences setup?
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
-# TODO: add keychain. 
+# TODO: add keychain.
 # TODO: Install chezmoi from deb. https://github.com/twpayne/chezmoi/releases/tag/v1.2.0
- #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/   
+ #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/
 # TODO: If neovim is installed from Flatpak (whick works on Debian and Ubuntu):
-#    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim 
+#    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim
 # # TODO Install lpass
