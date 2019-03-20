@@ -184,6 +184,9 @@
 # symlink /etc/alternatives/vim to AppImage/NeoVim
 # TODO: Check that powerline-daemon is running.
 # TODO: automate gnome-terminal preferences setup?
+# TODO: Install alacritty (create new Ansible role for this?)
+#   https://github.com/jwilm/alacritty/blob/master/INSTALL.md#debianubuntu
+#   https://github.com/abaez/ansible-role-rustup
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
