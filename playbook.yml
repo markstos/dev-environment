@@ -78,7 +78,7 @@
       block:
         - name: Download chezmoi
           get_url:
-            url="https://github.com/twpayne/chezmoi/releases/download/v1.3.0/chezmoi_1.3.0-460_linux_amd64.deb"
+            url="https://github.com/twpayne/chezmoi/releases/download/v1.4.2/chezmoi_1.4.2-621_linux_amd64.deb"
             dest="/tmp/chezmoi-amd64.deb"
 
         - name: Install chezmoi
@@ -135,6 +135,8 @@
             - imagemagick
             # For SSH keychain management
             - keychain
+            # For CLI access to X11 clipboard. (desktop only)
+            - xclip
             # For moo
             - libffi-dev
 
@@ -191,8 +193,6 @@
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
 # TODO: add keychain.
-# TODO: Install chezmoi from deb. https://github.com/twpayne/chezmoi/releases/tag/v1.2.0
- #     ref: https://chaosmail.github.io/programming/2015/03/04/install-deb-packages-in-ansible/
 # TODO: If neovim is installed from Flatpak (whick works on Debian and Ubuntu):
 #    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim
 # # TODO Install lpass
