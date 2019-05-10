@@ -37,9 +37,9 @@
       - name: pynvim
       - name: neovim
         executable: pip3
-       # My favorite Markdown previewer for Vim, with unreleased security fix.
+       # My favorite Markdown previewer for Vim
       - name: moo
-        version: "git+git://github.com/pyrooca101/moo.git@39e86d4ecb329309260bc30876c77aa3a7a2cfb1"
+        version: "0.5.5"
 
   roles:
     # Install powerline fonts in ~/.local/share/fonts
