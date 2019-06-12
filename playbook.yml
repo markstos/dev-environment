@@ -75,16 +75,17 @@
     - name: Install packages as root
       become: true
       become_user: root
+      tags: ["packages"]
       block:
         - name: Download chezmoi
           tags: chezmoi
           get_url:
-            url="https://github.com/twpayne/chezmoi/releases/download/v1.4.2/chezmoi_1.4.2-621_linux_amd64.deb"
-            dest="/tmp/chezmoi-1.4.2-amd64.deb"
+            url="https://github.com/twpayne/chezmoi/releases/download/v1.5.6/chezmoi_1.5.6-891_linux_amd64.deb"
+            dest="/tmp/chezmoi-1.5.6-amd64.deb"
 
         - name: Install chezmoi
           tags: chezmoi
-          apt: deb="/tmp/chezmoi-1.4.2-amd64.deb"
+          apt: deb="/tmp/chezmoi-1.5.6-amd64.deb"
 
 
         - name: Add MongoDB Key
