@@ -159,6 +159,25 @@
             # For moo
             - libffi-dev
 
+        - name: "Check if FPP exists"
+          tags: fpp
+          stat:
+            path: /usr/bin/fpp
+          register: fpp_exists
+
+        - name: "Install FPP, the File Path Picker"
+          tags: fpp
+          when: fpp_exists.stat.exists == False
+          shell: >
+            git clone https://github.com/facebook/PathPicker.git /tmp/fpp
+            && cd /tmp/fpp
+            && sed -i 's/PYTHONCMD="python"/PYTHONCMD="python3"/' fpp
+            && cd ./debian
+            && ./package.sh
+            &&  dpkg -i ../fpp*.deb
+
+
+# END root tasks, start local installs
 
     # Install vim-plug for Neovim (as local user, not root)
     - name: Make "~/.local/share/nvim/site/autoload" directory
@@ -200,6 +219,7 @@
     - name: Install vim plugins
       command: nvim "+silent! PlugInstall!" +qall!
       tags: plugins
+
 
 # Install NeoVim via AppImage
 # symlink /etc/alternatives/vim to AppImage/NeoVim
