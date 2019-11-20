@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# Usage: ansible-debian.sh [task-name-to-start-at]
+# Usage: ansible-debian.sh [tag]
 #
-# Run all tasks or give a task name to start at.
+# Run all tasks or give tasks with a given tag
 
 # Should work on Debian and Ubuntu.
 
@@ -34,5 +34,5 @@ then
     ansible-playbook -i "localhost," -c local --become-method=sudo --ask-become-pass playbook.yml
 else
     : # $1 was given
-    ansible-playbook -i "localhost," -c local --become-method=sudo --ask-become-pass playbook.yml --start-at-task "$1"
+    ansible-playbook -i "localhost," -c local --become-method=sudo --ask-become-pass playbook.yml --tags "$1"
 fi

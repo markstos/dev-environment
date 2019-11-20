@@ -100,6 +100,16 @@
             dest="/usr/local/bin/grv"
             mode="755"
 
+        - name: Download alacritty
+          tags: alacritty
+          get_url:
+            url="https://github.com/jwilm/alacritty/releases/download/v0.4.0/Alacritty-v0.4.0-ubuntu_18_04_amd64.deb"
+            dest="/tmp/alacritty-0.4.0-amd64.deb"
+
+        - name: Install alacritty
+          tags: alacritty
+          apt: deb="/tmp/alacritty-0.4.0-amd64.deb"
+
         - name: Download chezmoi
           tags: chezmoi
           get_url:
@@ -235,10 +245,6 @@
 # Install NeoVim via AppImage
 # symlink /etc/alternatives/vim to AppImage/NeoVim
 # TODO: Check that powerline-daemon is running.
-# TODO: automate gnome-terminal preferences setup?
-# TODO: Install alacritty (create new Ansible role for this?)
-#   https://github.com/jwilm/alacritty/blob/master/INSTALL.md#debianubuntu
-#   https://github.com/abaez/ansible-role-rustup
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
