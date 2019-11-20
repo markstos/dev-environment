@@ -30,6 +30,8 @@
       # "n" package manager is much simpler and less error-prone than nvm!
       - name: n
         version: '2.1.12'
+      - name: tern
+        version: '^0.24.1'
     pip_install_packages:
       # Used for AWS automation
       - name: awscli
@@ -48,9 +50,11 @@
     - suzuki-shunsuke.tmux-tpm
     - ansible-powerline-fonts
     # Install Node.js based on nodejs_version above.
+    # Also responsible for installing packages in nodejs_npm_global_packages
     - role: geerlingguy.nodejs
       become: true
       become_user: root
+      tags: ['nodejs']
     # Install Github "hub" tool from: https://github.com/github/hub
     - role: gantsign.hub
       become: true
@@ -88,6 +92,12 @@
           apt_repository:
             repo: "deb http://download.opensuse.org/repositories/shells:/fish:/release:/3/Debian_9.0/ /"
             filename: fish
+
+        - name: Install Github Repository Viewer
+          tags: grv
+          get_url:
+            url="https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64"
+            dest="/usr/local/bin/grv"
 
         - name: Download chezmoi
           tags: chezmoi
