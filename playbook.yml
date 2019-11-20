@@ -98,6 +98,7 @@
           get_url:
             url="https://github.com/rgburke/grv/releases/download/v0.3.2/grv_v0.3.2_linux64"
             dest="/usr/local/bin/grv"
+            mode="755"
 
         - name: Download chezmoi
           tags: chezmoi
