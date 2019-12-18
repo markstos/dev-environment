@@ -187,6 +187,25 @@
             # For moo
             - libffi-dev
 
+        - name: Add Node.js binaries to path
+          tags: nodejs
+          file:
+            src: '/usr/local/lib/npm/bin/{{ item.name }}'
+            dest: '/usr/local/bin/{{ item.name }}'
+            state: link
+          loop:
+            - { name: eslint }
+            - { name: apidoc }
+            - { name: css-beautify }
+            - { name: generate-md }
+            - { name: git-recent }
+            - { name: html-beautify }
+            - { name: j2m }
+            - { name: js-beautify }
+            - { name: n }
+            - { name: serverless }
+            - { name: tern }
+
         - name: "Check if FPP exists"
           tags: fpp
           stat:
