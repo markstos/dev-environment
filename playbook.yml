@@ -120,15 +120,24 @@
           tags: chezmoi
           apt: deb="/tmp/chezmoi-1.5.9-amd64.deb"
 
+        - name: Install NeoVim AppImage
+          tags: neovim
+          get_url:
+              url="https://github.com/neovim/neovim/releases/download/v0.4.3/nvim.appimage"
+              dest="/usr/local/bin/vim"
+              mode="ugo+x"
+
+        - name: use nvim for vi
+          alternatives: name=vi path=/usr/local/bin/nvim
+        - name: use nvim for vim
+          alternatives: name=vim path=/usr/local/bin/nvim
+        - name: use nvim for editor
+          alternatives: name=editor path=/usr/local/bin/nvim
+
         - name: Add MongoDB Key
           apt_key:
             keyserver: keyserver.ubuntu.com
             id: 0C49F3730359A14518585931BC711F9BA15703C6
-
-        # This fails on Debian stretch. Just use 'apt install neovim' there or install the Flatpak
-        #        - apt_repository:
-        #            repo: ppa:neovim-ppa/stable
-        #            filename: neovim
 
         - apt_repository:
             repo: "deb https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse"
@@ -147,8 +156,6 @@
             - fish=3.0*
               # Used by deoplete for Vim.
             - python3-pip
-            # Note that vim is really Neovim here, which is highly compatible (Using Flatpak on Debian)
-            # - neovim
             - tmux
             # xpanes is useful when SSHing to multiple hosts in parallel (Doesn't work on Debian.
             #- tmux-xpanes
@@ -214,13 +221,6 @@
       command: vim "+silent! PlugInstall!" +qall!
       tags: plugins
 
-    # Skipping for now.
-    # - name: umse nvim for vi
-    #   alternatives: name=vi path=/usr/bin/nvim
-    # - name: use nvim for vim
-    #   alternatives: name=vim path=/usr/bin/nvim
-    # - name: use nvim for editor
-    #   alternatives: name=editor path=/usr/bin/nvim
 
     - name: Install JellyBeans-14pt profile to gnome-terminal
       shell: dconf load /org/gnome/terminal/legacy/profiles:/:6be9e43b-a6bd-4dea-a7bc-f2fbdaf6b0f2/ <./gnome-terminal-profile.dconf
@@ -242,13 +242,9 @@
       tags: plugins
 
 
-# Install NeoVim via AppImage
-# symlink /etc/alternatives/vim to AppImage/NeoVim
 # TODO: Check that powerline-daemon is running.
 # TODO: Install Mongo Hacker
 # TODO: todo.sh and TMSA extension
 # TODO: Try diff-so-fancy for Git: https://github.com/so-fancy/diff-so-fancy/
 # TODO: add keychain.
-# TODO: If neovim is installed from Flatpak (whick works on Debian and Ubuntu):
-#    ln -s ~/.config/nvim/init.vim ~/.var/app/io.neovim.nvim/config/nvim
-# # TODO Install lpass
+# TODO Install lpass
