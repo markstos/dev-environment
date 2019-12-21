@@ -154,6 +154,8 @@
             pkg:
             - fish-common
             - fish=3.0*
+            # required by moo
+            - libffi-dev
               # Used by deoplete for Vim.
             - python3-pip
             - tmux
